@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>体重増加計算アプリ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input {
+      padding: 8px;
+      width: 100%;
+      max-width: 300px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+    .highlight {
+      color: red;
+      font-weight: bold;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>体重増加計算アプリ</h1>
+
+  <form id="weightForm">
+    <label>
+      前回測定日:
+      <input type="date" id="previousDate" required />
+    </label>
+    <label>
+      前回体重（g）:
+      <input type="number" id="previousWeight" required min="0" step="1" />
+    </label>
+    <label>
+      今回測定日:
+      <input type="date" id="currentDate" required />
+    </label>
+    <label>
+      今回体重（g）:
+      <input type="number" id="currentWeight" required min="0" step="1" />
+    </label>
+    <button type="submit">計算</button>
+  </form>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    document.getElementById('weightForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const prevDate = new Date(document.getElementById('previousDate').value);
+      const currDate = new Date(document.getElementById('currentDate').value);
+      const prevWeight = parseInt(document.getElementById('previousWeight').value);
+      const currWeight = parseInt(document.getElementById('currentWeight').value);
+
+      if (isNaN(prevWeight) || isNaN(currWeight) || currDate <= prevDate) {
+        alert("正しい日付と体重を入力してください（測定日は前回より後の日付にしてください）");
+        return;
+      }
+
+      const diffTime = currDate - prevDate;
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+      const weightGain = currWeight - prevWeight;
+      const gainPerDay = (weightGain / diffDays).toFixed(2);
+
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `
+        前回測定日から <span class="highlight">${diffDays}</span> 日経過し、
+        <span class="highlight">${weightGain}</span> グラム体重が増えました。<br/>
+        1日あたりの体重増加量は <span class="highlight">${gainPerDay}</span> グラムです。
+      `;
+    });
+  </script>
+<footer>
+    <div class="container">
+    <p>©︎Kouichi Nagatani</p>
+    </div><!-- /.container -->
+    </footer>
+</body>
+</html>
+
